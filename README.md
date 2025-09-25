@@ -1,5 +1,10 @@
 # Shop App
 
+<<<<<<< HEAD
+=======
+# Shop App
+
+>>>>>>> 0f323d5df8320570e4929d4e1fffa71d6d97bfb6
 This is a full-stack e-commerce application built with the MERN stack (MongoDB, Express.js, React, Node.js) and TypeScript.
 
 ## Features
