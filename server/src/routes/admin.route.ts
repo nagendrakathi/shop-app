@@ -7,10 +7,10 @@ const router = express.Router();
 router.post("/create-product", verifyToken, isAdmin, createProduct);
 router.patch("/update-product/:id", verifyToken, isAdmin, updateProduct);
 router.delete("/delete-product/:id", verifyToken, isAdmin, deleteProduct);
-router.get("/get-all-products", verifyToken, isAdmin, getAllProducts)
+router.get("/get-all-products", verifyToken, getAllProducts)
 router.get("/get-product/:id", verifyToken, isAdmin, getProductById)
 router.get("/get-all-users", verifyToken, isAdmin, getAllUsers)
 router.get("/get-user/:id", verifyToken, isAdmin, getUserById)
-router.delete("/delete-user/:productId", verifyToken, isAdmin, delUser)
+router.delete("/delete-user/:userId", verifyToken, isAdmin, delUser)
 
 export default router;

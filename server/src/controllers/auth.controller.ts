@@ -18,7 +18,7 @@ interface LoginBody {
 }
 
 interface DeleteUserBody {
-  password: string;
+    password: string;
 }
 
 async function hashPassword(password: string): Promise<string> {
@@ -38,12 +38,12 @@ export const register = async (req: Request<{}, {}, RegisterBody>, res: Response
             res.status(400).json({ message: "User already exists" });
             return;
         }
-        if(role==='admin'){
-            if(!secret){
+        if (role === 'admin') {
+            if (!secret) {
                 res.status(400).json({ message: "Admin secret is required" });
                 return;
             }
-            if(secret !== process.env.ADMIN_SECRET){
+            if (secret !== process.env.ADMIN_SECRET) {
                 res.status(403).json({ message: "Invalid admin secret" });
                 return;
             }
@@ -53,8 +53,14 @@ export const register = async (req: Request<{}, {}, RegisterBody>, res: Response
         if (newUser) {
             generateToken(newUser._id, newUser.role, res);
             await newUser.save();
+            const userData = {
+                _id: newUser._id,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role
+            };
             const message = role === 'admin' ? "Admin registered successfully" : "User registered successfully";
-            res.status(201).json({ message, userId: newUser._id, role: newUser.role });
+            res.status(201).json({ message, userData });
         }
         return;
     } catch (error) {
@@ -76,13 +82,19 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response): Pro
             res.status(400).json({ message: "Invalid credentials" });
             return;
         }
+        const userData = {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        };
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             res.status(400).json({ message: "Invalid credentials" });
             return;
         }
         generateToken(user._id, user.role, res);
-        res.status(200).json({ message: "Login successful", userId: user._id, role: user.role });
+        res.status(200).json({ message: "Login successful", userData });
         return;
     }
     catch (error) {
@@ -112,7 +124,7 @@ export const getProfile = async (req: AuthenticatedRequest, res: Response): Prom
     return
 }
 
-export const deleteUser= async (req: AuthenticatedRequest& { body: DeleteUserBody }, res: Response): Promise<void> => {
+export const deleteUser = async (req: AuthenticatedRequest & { body: DeleteUserBody }, res: Response): Promise<void> => {
     const userId = req.user?._id;
     console.log("Authenticated user ID:", userId);
     const { password } = req.body;
